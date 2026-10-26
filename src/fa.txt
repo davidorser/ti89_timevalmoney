@@ -1,0 +1,8 @@
+:fa(a,i,n)
+:Func
+:© Future value of an annuity (END): f = a*((1+i)^n-1)/i
+:© a = payment per period, i = rate per period (decimal), n = periods
+:If i=0
+:Return a*n
+:a*((1+i)^n-1)/i
+:EndFunc

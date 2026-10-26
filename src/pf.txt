@@ -1,0 +1,6 @@
+:pf(f,i,n)
+:Func
+:© Present value of a future value: p = f/(1+i)^n
+:© f = future value, i = rate per period (decimal), n = periods
+:f/(1+i)^n
+:EndFunc

@@ -1,0 +1,8 @@
+:pa(a,i,n)
+:Func
+:© Present value of an annuity (END): p = a*(1-1/(1+i)^n)/i
+:© a = payment per period, i = rate per period (decimal), n = periods
+:If i=0
+:Return a*n
+:a*(1-1/(1+i)^n)/i
+:EndFunc

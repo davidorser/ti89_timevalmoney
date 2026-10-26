@@ -1,0 +1,8 @@
+:af(f,i,n)
+:Func
+:© Annuity of a future value (END): a = f*i/((1+i)^n-1)
+:© f = future value, i = rate per period (decimal), n = periods
+:If i=0
+:Return f/n
+:f*i/((1+i)^n-1)
+:EndFunc

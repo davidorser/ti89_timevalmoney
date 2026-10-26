@@ -1,0 +1,8 @@
+:ap(p,i,n)
+:Func
+:© Annuity of a present value (END): a = p*i/(1-1/(1+i)^n)
+:© p = present value, i = rate per period (decimal), n = periods
+:If i=0
+:Return p/n
+:p*i/(1-1/(1+i)^n)
+:EndFunc

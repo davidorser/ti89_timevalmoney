@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TI-89 TVM Functions</title>
+<meta name="description" content="How six time-value-of-money functions went from equations to a working TI-89, built in one conversation with Claude Code.">
+<style>
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f3f1ec;
+  --text: #1d1c1a;
+  --muted: #5f5c55;
+  --border: #e3e0d8;
+  --accent: #b4532a;
+  --accent-soft: #f6e6dc;
+  --ok: #2f7a4b;
+  --ok-soft: #e1f1e6;
+  --code-bg: #f3f1ec;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #181715;
+    --surface: #211f1c;
+    --surface-2: #2a2824;
+    --text: #ece9e2;
+    --muted: #a7a297;
+    --border: #36332d;
+    --accent: #e08a5f;
+    --accent-soft: #3a2a20;
+    --ok: #7cc797;
+    --ok-soft: #1f3226;
+    --code-bg: #2a2824;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #181715;
+  --surface: #211f1c;
+  --surface-2: #2a2824;
+  --text: #ece9e2;
+  --muted: #a7a297;
+  --border: #36332d;
+  --accent: #e08a5f;
+  --accent-soft: #3a2a20;
+  --ok: #7cc797;
+  --ok-soft: #1f3226;
+  --code-bg: #2a2824;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 820px; margin: 0 auto; padding: 48px 16px 80px; }
+h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; margin: 56px 0 12px; letter-spacing: -0.01em; }
+h3 { font-size: 1.08rem; margin: 0 0 6px; }
+p { margin: 0 0 14px; }
+a { color: var(--accent); }
+.lede { font-size: 1.12rem; color: var(--muted); max-width: 640px; }
+.meta { color: var(--muted); font-size: .9rem; margin-top: 18px; }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .9em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+pre code { background: none; padding: 0; }
+.table-wrap { overflow-x: auto; margin: 0 0 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td code { white-space: nowrap; }
+.downloads { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin: 16px 0 18px; }
+.dl {
+  display: block; text-decoration: none; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; box-shadow: var(--shadow);
+}
+.dl:hover { border-color: var(--accent); }
+.dl b { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--accent); }
+.dl span { display: block; font-size: .82rem; color: var(--muted); }
+.timeline { list-style: none; padding: 0; margin: 0; border-left: 2px solid var(--border); }
+.timeline li { position: relative; padding: 0 0 26px 24px; }
+.timeline li::before {
+  content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--bg); border: 2px solid var(--accent);
+}
+.timeline .ask { color: var(--muted); font-style: italic; margin-bottom: 6px; }
+.callout {
+  background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; margin: 0 0 16px;
+}
+.callout.ok { background: var(--ok-soft); }
+.tag { display: inline-block; font-size: .75rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); margin-left: 6px; vertical-align: 2px; }
+details { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 0 0 10px; }
+summary { cursor: pointer; padding: 10px 14px; font-weight: 600; }
+details pre { margin: 0 14px 14px; }
+nav.toc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; margin-top: 28px; }
+nav.toc ol { margin: 0; padding-left: 20px; }
+footer { margin-top: 64px; color: var(--muted); font-size: .88rem; border-top: 1px solid var(--border); padding-top: 18px; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Time value of money on a TI-89</h1>
+<p class="lede">Six engineering-economics factor functions, from the equations to a working calculator, built in one conversation with Claude Code. This page describes how it went and includes the finished files.</p>
+<p class="meta">David Orser · October 26, 2026 · All six functions tested on a real TI-89</p>
+
+<nav class="toc" aria-label="Contents">
+<ol>
+<li><a href="#get">Get the functions</a></li>
+<li><a href="#functions">The six functions</a></li>
+<li><a href="#story">How it was built</a></li>
+<li><a href="#format">Inside a .89f file</a></li>
+<li><a href="#source">Source code</a></li>
+</ol>
+</nav>
+
+<h2 id="get">Get the functions</h2>
+<p>These files are embedded in this page, so the download links work even when the page is saved on its own. Send them to the calculator with TI Connect's <em>Send To TI Device</em>. They go to the <code>main</code> folder.</p>
+<div class="downloads">
+<a class="dl" download="pf.89f" href="data:application/octet-stream;base64,KipUSTg5KioBAG1haW4AAAAAdHh0MnRpODkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUgAAAHBmAAAAAAAAEwMAAPIAAAClWgAAAAAAmChmLGksbikNRnVuYw2pIFByZXNlbnQgdmFsdWUgb2YgYSBmdXR1cmUgdmFsdWU6IHAgPSBmLygxK2kpXm4NqSBmID0gZnV0dXJlIHZhbHVlLCBpID0gcmF0ZSBwZXIgcGVyaW9kIChkZWNpbWFsKSwgbiA9IHBlcmlvZHMNZi8oMStpKV5uDUVuZEZ1bmMAAA0X5OUAAQjcIzE="><b>pf.89f</b><span>P from F</span></a>
+<a class="dl" download="fp.89f" href="data:application/octet-stream;base64,KipUSTg5KioBAG1haW4AAAAAdHh0MnRpODkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUgAAAGZwAAAAAAAAEwMAAPMAAAClWgAAAAAAmShwLGksbikNRnVuYw2pIEZ1dHVyZSB2YWx1ZSBvZiBhIHByZXNlbnQgdmFsdWU6IGYgPSBwKigxK2kpXm4NqSBwID0gcHJlc2VudCB2YWx1ZSwgaSA9IHJhdGUgcGVyIHBlcmlvZCAoZGVjaW1hbCksIG4gPSBwZXJpb2RzDXAqKDEraSlebg1FbmRGdW5jAAANF+TlAAEI3J4x"><b>fp.89f</b><span>F from P</span></a>
+<a class="dl" download="pa.89f" href="data:application/octet-stream;base64,KipUSTg5KioBAG1haW4AAAAAdHh0MnRpODkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUgAAAHBhAAAAAAAAEwMAABwBAAClWgAAAAAAwihhLGksbikNRnVuYw2pIFByZXNlbnQgdmFsdWUgb2YgYW4gYW5udWl0eSAoRU5EKTogcCA9IGEqKDEtMS8oMStpKV5uKS9pDakgYSA9IHBheW1lbnQgcGVyIHBlcmlvZCwgaSA9IHJhdGUgcGVyIHBlcmlvZCAoZGVjaW1hbCksIG4gPSBwZXJpb2RzDUlmIGk9MA1SZXR1cm4gYSpuDWEqKDEtMS8oMStpKV5uKS9pDUVuZEZ1bmMAAA0X5OUAAQjc6zs="><b>pa.89f</b><span>P from A</span></a>
+<a class="dl" download="ap.89f" href="data:application/octet-stream;base64,KipUSTg5KioBAG1haW4AAAAAdHh0MnRpODkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUgAAAGFwAAAAAAAAEwMAABYBAAClWgAAAAAAvChwLGksbikNRnVuYw2pIEFubnVpdHkgb2YgYSBwcmVzZW50IHZhbHVlIChFTkQpOiBhID0gcCppLygxLTEvKDEraSlebikNqSBwID0gcHJlc2VudCB2YWx1ZSwgaSA9IHJhdGUgcGVyIHBlcmlvZCAoZGVjaW1hbCksIG4gPSBwZXJpb2RzDUlmIGk9MA1SZXR1cm4gcC9uDXAqaS8oMS0xLygxK2kpXm4pDUVuZEZ1bmMAAA0X5OUAAQjc7jk="><b>ap.89f</b><span>A from P</span></a>
+<a class="dl" download="fa.89f" href="data:application/octet-stream;base64,KipUSTg5KioBAG1haW4AAAAAdHh0MnRpODkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUgAAAGZhAAAAAAAAEwMAABcBAAClWgAAAAAAvShhLGksbikNRnVuYw2pIEZ1dHVyZSB2YWx1ZSBvZiBhbiBhbm51aXR5IChFTkQpOiBmID0gYSooKDEraSlebi0xKS9pDakgYSA9IHBheW1lbnQgcGVyIHBlcmlvZCwgaSA9IHJhdGUgcGVyIHBlcmlvZCAoZGVjaW1hbCksIG4gPSBwZXJpb2RzDUlmIGk9MA1SZXR1cm4gYSpuDWEqKCgxK2kpXm4tMSkvaQ1FbmRGdW5jAAANF+TlAAEI3LY6"><b>fa.89f</b><span>F from A</span></a>
+<a class="dl" download="af.89f" href="data:application/octet-stream;base64,KipUSTg5KioBAG1haW4AAAAAdHh0MnRpODkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUgAAAGFmAAAAAAAAEwMAABABAAClWgAAAAAAtihmLGksbikNRnVuYw2pIEFubnVpdHkgb2YgYSBmdXR1cmUgdmFsdWUgKEVORCk6IGEgPSBmKmkvKCgxK2kpXm4tMSkNqSBmID0gZnV0dXJlIHZhbHVlLCBpID0gcmF0ZSBwZXIgcGVyaW9kIChkZWNpbWFsKSwgbiA9IHBlcmlvZHMNSWYgaT0wDVJldHVybiBmL24NZippLygoMStpKV5uLTEpDUVuZEZ1bmMAAA0X5OUAAQjcKjg="><b>af.89f</b><span>A from F</span></a>
+<a class="dl" download="txt2ti89.py" href="data:text/x-python;base64,IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJDb252ZXJ0IFRJLUJBU0lDIHNvdXJjZSAoLnR4dCkgaW50byBUSS04OSB2YXJpYWJsZSBmaWxlcyAoLjg5ZiAvIC44OXApLgoKVGhlIHByb2dyYW0gaXMgc3RvcmVkIGluIHVudG9rZW5pemVkIChzb3VyY2UgdGV4dCkgZm9ybSwgZXhhY3RseSBhcyB0aGUKY2FsY3VsYXRvcidzIFByb2dyYW0gRWRpdG9yIHNhdmVzIGl0OyB0aGUgY2FsY3VsYXRvciB0b2tlbml6ZXMgaXQgb24gZmlyc3QgcnVuLgoKVXNhZ2U6ICBweXRob24zIHRvb2xzL3R4dDJ0aTg5LnB5IHNyYy9wZi50eHQgW3NyYy9mcC50eHQgLi4uXSBbLW8gYnVpbGRdIFstLWZvbGRlciBtYWluXQoKU291cmNlIGZvcm1hdCAob25lIHN0YXRlbWVudCBwZXIgbGluZSwgbGVhZGluZyAnOicgb3B0aW9uYWwpOgogICAgOnBmKGYsaSxuKQogICAgOkZ1bmMKICAgIDouLi4KICAgIDpFbmRGdW5jClRoZSBmaXJzdCBsaW5lIGlzIG5hbWUoYXJncyk7IHRoZSBzZWNvbmQgbGluZSwgRnVuYyBvciBQcmdtLCBwaWNrcyAuODlmIG9yIC44OXAuCgpGaWxlIGxheW91dCAoYWxsIHZlcmlmaWVkIGFnYWluc3QgZmlsZXMgd3JpdHRlbiBieSBUSSBDb25uZWN0KToKICAgIDB4MDAgICIqKlRJODkqKiIgICAgICAgICAgICAgICAgIHNpZ25hdHVyZQogICAgMHgwOCAgMDEgMDAKICAgIDB4MEEgIGZvbGRlciBuYW1lICAgICAgICAgICAgICAgIDggYnl0ZXMsIHplcm8gcGFkZGVkCiAgICAweDEyICBjb21tZW50ICAgICAgICAgICAgICAgICAgICA0MCBieXRlcywgemVybyBwYWRkZWQKICAgIDB4M0EgIDAxIDAwIDUyIDAwIDAwIDAwCiAgICAweDQwICB2YXJpYWJsZSBuYW1lICAgICAgICAgICAgICA4IGJ5dGVzLCB6ZXJvIHBhZGRlZAogICAgMHg0OCAgdHlwZSAgICAgICAgICAgICAgICAgICAgICAgMHgxMyA9IEZVTkMsIDB4MTIgPSBQUkdNCiAgICAweDQ5ICAwMyAwMCAwMAogICAgMHg0QyAgdG90YWwgZmlsZSBzaXplICAgICAgICAgICAgNCBieXRlcywgbGl0dGxlLWVuZGlhbgogICAgMHg1MCAgQTUgNUEKICAgIDB4NTIgIDAwIDAwIDAwIDAwCiAgICAweDU2ICB2YXJpYWJsZSBzaXplICAgICAgICAgICAgICAyIGJ5dGVzLCBiaWctZW5kaWFuCiAgICAweDU4ICB2YXJpYWJsZSBkYXRhCiAgICBlbmQgICBjaGVja3N1bSAgICAgICAgICAgICAgICAgICAyIGJ5dGVzLCBsaXR0bGUtZW5kaWFuOiBzdW0gb2YgdGhlIHNpemUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFuZCBkYXRhIGJ5dGVzLCBsb3cgMTYgYml0cwpWYXJpYWJsZSBkYXRhIGZvciB1bnRva2VuaXplZCBzb3VyY2U6CiAgICAiKGFyZ3MpIiBDUiAiRnVuYyIgQ1IgLi4uICJFbmRGdW5jIiAgIGxpbmVzIGpvaW5lZCBieSAweDBECiAgICAwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRleHQgdGVybWluYXRvcgogICAgY3Vyc29yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAyIGJ5dGVzLCBiaWctZW5kaWFuIG9mZnNldCBpbnRvIHRleHQKICAgIDE3IEU0IEU1IDAwIDAxIDA4IERDICAgICAgICAgICAgICAgICAgdW50b2tlbml6ZWQtcHJvZ3JhbSB0cmFpbGVyCiIiIgppbXBvcnQgYXJncGFyc2UKaW1wb3J0IG9zCmltcG9ydCByZQppbXBvcnQgc3lzCgpUWVBFX0lEUyA9IHsiZnVuYyI6ICgweDEzLCAiLjg5ZiIpLCAicHJnbSI6ICgweDEyLCAiLjg5cCIpfQpUUkFJTEVSID0gYnl0ZXMoWzB4MTcsIDB4RTQsIDB4RTUsIDB4MDAsIDB4MDEsIDB4MDgsIDB4RENdKQoKIyBOb24tQVNDSUkgY2hhcmFjdGVycyBhY2NlcHRlZCBpbiBzb3VyY2UsIG1hcHBlZCB0byB0aGUgVEktODkgY2hhcmFjdGVyIHNldC4KIyBPbmx5IGNoYXJhY3RlcnMgY29uZmlybWVkIGFnYWluc3QgcmVhbCBjYWxjdWxhdG9yIGZpbGVzIGFyZSBsaXN0ZWQuCkNIQVJNQVAgPSB7IsKpIjogMHhBOX0KCgpkZWYgZW5jb2RlX3RleHQodGV4dCwgc3JjKToKICAgIG91dCA9IGJ5dGVhcnJheSgpCiAgICBmb3IgY2ggaW4gdGV4dDoKICAgICAgICBpZiBjaCBpbiBDSEFSTUFQOgogICAgICAgICAgICBvdXQuYXBwZW5kKENIQVJNQVBbY2hdKQogICAgICAgIGVsaWYgMHgyMCA8PSBvcmQoY2gpIDwgMHg3RiBvciBjaCA9PSAiXHIiOgogICAgICAgICAgICBvdXQuYXBwZW5kKG9yZChjaCkpCiAgICAgICAgZWxzZToKICAgICAgICAgICAgc3lzLmV4aXQoZiJ7c3JjfTogdW5zdXBwb3J0ZWQgY2hhcmFjdGVyIHtjaCFyfTsgYWRkIGl0IHRvIENIQVJNQVAiKQogICAgcmV0dXJuIGJ5dGVzKG91dCkKCgpkZWYgcGFyc2Vfc291cmNlKHBhdGgpOgogICAgd2l0aCBvcGVuKHBhdGgsIGVuY29kaW5nPSJ1dGYtOCIpIGFzIGZoOgogICAgICAgIGxpbmVzID0gW2xuLnJzdHJpcCgiXHJcbiIpIGZvciBsbiBpbiBmaF0KICAgIGxpbmVzID0gW2xuWzE6XSBpZiBsbi5zdGFydHN3aXRoKCI6IikgZWxzZSBsbiBmb3IgbG4gaW4gbGluZXNdCiAgICB3aGlsZSBsaW5lcyBhbmQgbm90IGxpbmVzWy0xXS5zdHJpcCgpOgogICAgICAgIGxpbmVzLnBvcCgpCiAgICBtID0gcmUuZnVsbG1hdGNoKHIiXHMqKFtBLVphLXpdW0EtWmEtejAtOV9dezAsN30pXHMqKFwoLipcKSlccyoiLCBsaW5lc1swXSkKICAgIGlmIG5vdCBtOgogICAgICAgIHN5cy5leGl0KGYie3BhdGh9OiBmaXJzdCBsaW5lIG11c3QgYmUgbmFtZShhcmdzKSwgbmFtZSBhdCBtb3N0IDggY2hhcmFjdGVycyIpCiAgICBuYW1lLCBhcmdzID0gbS5ncm91cCgxKS5sb3dlcigpLCBtLmdyb3VwKDIpCiAgICBraW5kID0gbGluZXNbMV0uc3RyaXAoKS5sb3dlcigpIGlmIGxlbihsaW5lcykgPiAxIGVsc2UgIiIKICAgIGlmIGtpbmQgbm90IGluIFRZUEVfSURTOgogICAgICAgIHN5cy5leGl0KGYie3BhdGh9OiBzZWNvbmQgbGluZSBtdXN0IGJlIEZ1bmMgb3IgUHJnbSIpCiAgICByZXR1cm4gbmFtZSwga2luZCwgW2FyZ3NdICsgbGluZXNbMTpdCgoKZGVmIGJ1aWxkX3ZhcihuYW1lLCBraW5kLCBsaW5lcywgZm9sZGVyLCBjb21tZW50LCBzcmMpOgogICAgdGV4dCA9IGVuY29kZV90ZXh0KCJcciIuam9pbihsaW5lcyksIHNyYykKICAgIGN1cnNvciA9IGxlbihsaW5lc1swXSkgKyBsZW4obGluZXNbMV0pICsgMiAgIyBzdGFydCBvZiB0aGUgYm9keQogICAgZGF0YSA9IHRleHQgKyBiIlx4MDAiICsgY3Vyc29yLnRvX2J5dGVzKDIsICJiaWciKSArIFRSQUlMRVIKICAgIGJvZHkgPSBsZW4oZGF0YSkudG9fYnl0ZXMoMiwgImJpZyIpICsgZGF0YQogICAgdHlwZV9pZCwgZXh0ID0gVFlQRV9JRFNba2luZF0KCiAgICBkZWYgZmllbGQocywgbik6CiAgICAgICAgcmV0dXJuIHMuZW5jb2RlKCJsYXRpbi0xIilbOm5dLmxqdXN0KG4sIGIiXHgwMCIpCgogICAgaGVhZGVyID0gKGIiKipUSTg5KioiICsgYiJceDAxXHgwMCIgKyBmaWVsZChmb2xkZXIsIDgpICsgZmllbGQoY29tbWVudCwgNDApCiAgICAgICAgICAgICAgKyBiIlx4MDFceDAwXHg1Mlx4MDBceDAwXHgwMCIgKyBmaWVsZChuYW1lLCA4KQogICAgICAgICAgICAgICsgYnl0ZXMoW3R5cGVfaWQsIDB4MDMsIDB4MDAsIDB4MDBdKSkKICAgIHRvdGFsID0gbGVuKGhlYWRlcikgKyA0ICsgMiArIDQgKyBsZW4oYm9keSkgKyAyCiAgICBjaGVja3N1bSA9IChzdW0oYm9keSkgJiAweEZGRkYpLnRvX2J5dGVzKDIsICJsaXR0bGUiKQogICAgYmxvYiA9IChoZWFkZXIgKyB0b3RhbC50b19ieXRlcyg0LCAibGl0dGxlIikgKyBiIlx4QTVceDVBIgogICAgICAgICAgICArIGIiXHgwMFx4MDBceDAwXHgwMCIgKyBib2R5ICsgY2hlY2tzdW0pCiAgICBhc3NlcnQgbGVuKGJsb2IpID09IHRvdGFsCiAgICByZXR1cm4gYmxvYiwgZXh0CgoKZGVmIG1haW4oKToKICAgIGFwID0gYXJncGFyc2UuQXJndW1lbnRQYXJzZXIoZGVzY3JpcHRpb249X19kb2NfXy5zcGxpdCgiXG4iKVswXSkKICAgIGFwLmFkZF9hcmd1bWVudCgic291cmNlcyIsIG5hcmdzPSIrIikKICAgIGFwLmFkZF9hcmd1bWVudCgiLW8iLCAiLS1vdXRkaXIiLCBkZWZhdWx0PSJidWlsZCIpCiAgICBhcC5hZGRfYXJndW1lbnQoIi0tZm9sZGVyIiwgZGVmYXVsdD0ibWFpbiIpCiAgICBhcC5hZGRfYXJndW1lbnQoIi0tY29tbWVudCIsIGRlZmF1bHQ9InR4dDJ0aTg5IikKICAgIGFyZ3MgPSBhcC5wYXJzZV9hcmdzKCkKICAgIG9zLm1ha2VkaXJzKGFyZ3Mub3V0ZGlyLCBleGlzdF9vaz1UcnVlKQogICAgZm9yIHNyYyBpbiBhcmdzLnNvdXJjZXM6CiAgICAgICAgbmFtZSwga2luZCwgbGluZXMgPSBwYXJzZV9zb3VyY2Uoc3JjKQogICAgICAgIGJsb2IsIGV4dCA9IGJ1aWxkX3ZhcihuYW1lLCBraW5kLCBsaW5lcywgYXJncy5mb2xkZXIsIGFyZ3MuY29tbWVudCwgc3JjKQogICAgICAgIG91dCA9IG9zLnBhdGguam9pbihhcmdzLm91dGRpciwgbmFtZSArIGV4dCkKICAgICAgICB3aXRoIG9wZW4ob3V0LCAid2IiKSBhcyBmaDoKICAgICAgICAgICAgZmgud3JpdGUoYmxvYikKICAgICAgICBwcmludChmIntzcmN9IC0+IHtvdXR9ICh7bGVuKGJsb2IpfSBieXRlcykiKQoKCmlmIF9fbmFtZV9fID09ICJfX21haW5fXyI6CiAgICBtYWluKCkK"><b>txt2ti89.py</b><span>Text → .89f converter</span></a>
+</div>
+<p>Run each function once after sending. The calculator stores them as text and converts them on their first run.</p>
+
+<h2 id="functions">The six functions</h2>
+<p>Each one takes three arguments: an amount, <code>i</code>, the interest rate per period as a decimal, and <code>n</code>, the number of periods. Payments are at the <strong>end</strong> of each period. Results are plain amounts, with no positive/negative cash-flow signs.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Function</th><th>Finds</th><th>Formula</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td><code>pf(f,i,n)</code></td><td>Present value of a future amount</td><td><code>f/(1+i)^n</code></td><td><code>pf(1000,.06,5)</code> → 747.258</td></tr>
+<tr><td><code>fp(p,i,n)</code></td><td>Future value of a present amount</td><td><code>p·(1+i)^n</code></td><td><code>fp(1000,.06,5)</code> → 1338.23</td></tr>
+<tr><td><code>pa(a,i,n)</code></td><td>Present value of a series of payments</td><td><code>a·(1−1/(1+i)^n)/i</code></td><td><code>pa(100,.08,10)</code> → 671.008</td></tr>
+<tr><td><code>ap(p,i,n)</code></td><td>Payment that pays off a present amount</td><td><code>p·i/(1−1/(1+i)^n)</code></td><td><code>ap(200000,.005,360)</code> → 1199.10</td></tr>
+<tr><td><code>fa(a,i,n)</code></td><td>Future value of a series of payments</td><td><code>a·((1+i)^n−1)/i</code></td><td><code>fa(100,.05,10)</code> → 1257.789</td></tr>
+<tr><td><code>af(f,i,n)</code></td><td>Payment that builds up to a future amount</td><td><code>f·i/((1+i)^n−1)</code></td><td><code>af(10000,.06/12,120)</code> → 61.0205</td></tr>
+</tbody>
+</table>
+</div>
+<p>When <code>i = 0</code>, the four payment functions skip the formula and use the simple answer instead: <code>a·n</code>, <code>p/n</code>, <code>a·n</code> and <code>f/n</code>.</p>
+<div class="callout">
+<strong>Two things to watch.</strong> First, <code>i</code> and <code>n</code> must match the payment frequency: for monthly payments at 6% a year over 30 years, use <code>.06/12</code> and <code>360</code>. Second, for payments at the <em>start</em> of each period, multiply <code>pa</code> or <code>fa</code> by <code>(1+i)</code>, or divide <code>ap</code> or <code>af</code> by <code>(1+i)</code>.
+</div>
+<p>The functions combine for problems that mix a lump sum and payments. For example, the present value of $200 a month for five years plus $5,000 at the end, at 6%:</p>
+<pre><code>pa(200,.005,60)+pf(5000,.005,60)</code></pre>
+
+<h2 id="story">How it was built</h2>
+<p>The project took one session of back-and-forth with Claude Code. Each step below starts with the request that kicked it off.</p>
+<ol class="timeline">
+<li>
+<h3>Write down the equations</h3>
+<p class="ask">"Define and enumerate the time-value of money equations with an eye toward building TI-89 functions."</p>
+<p>Claude wrote a reference document, <code>TVM_EQUATIONS.md</code>. It starts from the single equation every TVM problem reduces to, in which all cash flows moved to the same date sum to zero:</p>
+<pre><code>p·(1+i)^n + PMT·(1+i·k)·((1+i)^n − 1)/i + f = 0</code></pre>
+<p>It then solves that equation for each variable and covers amortization, rate conversions, NPV and IRR. Every formula was checked numerically in Python, including the standard result that a $200,000, 30-year mortgage at 6% costs $1,199.10 a month.</p>
+</li>
+<li>
+<h3>Use shorter names, and check END vs BEGIN</h3>
+<p class="ask">"Change the variable names: p = present value, f = future value, i = interest rate as decimal, n = number of periods. Show me present value of a future worth with END and then BEGIN timing."</p>
+<p>The answer is the same either way: <code>p = f/(1+i)^n</code>. Payment timing only affects a stream of payments (the <code>k</code> term above), so it doesn't change a single lump sum.</p>
+</li>
+<li>
+<h3>The first two functions: <code>pf</code> and <code>fp</code></h3>
+<p class="ask">"Let's start by creating two simplified TVM functions pf(f,i,n) and fp(p,i,n)."</p>
+<p>Each is a one-line TI-BASIC <code>Func</code>. The names follow the standard engineering-economics factors (P/F, F/P), which set the naming for the rest.</p>
+</li>
+<li>
+<h3>Plan the payment pair, and look for gaps</h3>
+<p class="ask">"Present Value of an annuity pa(a,i,n) and the Annuity of a present value ap(p,i,n). Let me know if you see any holes."</p>
+<p>The review turned up five issues:</p>
+<ul>
+<li>No argument for payment timing.</li>
+<li>Division by zero when <code>i = 0</code>.</li>
+<li>The rate and period must match the payment frequency.</li>
+<li>No support for a balloon payment.</li>
+<li>Results have no cash-flow signs.</li>
+</ul>
+<p>The main decision was timing. The options were a fourth argument, separate BEGIN versions, or assuming END.</p>
+<div class="callout ok"><strong>Decision:</strong> assume END. This keeps every function at three arguments and matches the standard factor tables.</div>
+</li>
+<li>
+<h3>Simpler code: <code>If</code> instead of <code>when()</code></h3>
+<p class="ask">"Remove the weird when() syntax and use a simple if() statement."</p>
+<p>The zero-rate case became a plain <code>If i=0</code> / <code>Return</code>, which is easier to read on the calculator screen.</p>
+</li>
+<li>
+<h3>TI Connect won't take .txt files</h3>
+<p class="ask">"My TI-Connect software doesn't seem to accept .txt files. Can you export files compatible with Send To TI Device?"</p>
+<p>No ready-made tool for this turned up. The published TI-89 file guides cover the file header but not how a function is stored inside it. Claude filled the gap by comparing real <code>.89f</code> files saved from a calculator with their plain-text listings. They showed that functions are stored as plain text, not compiled code, so a converter only needs to wrap the text correctly. The <a href="#format">format section</a> has the details.</p>
+<p>The resulting converter, <code>tools/txt2ti89.py</code>, rebuilt one of the calculator-written samples <strong>byte for byte</strong>. All four functions then worked on the real calculator the first time.</p>
+</li>
+<li>
+<h3>The last pair: <code>fa</code> and <code>af</code></h3>
+<p class="ask">"Plan the future-value annuity pair: fa(a,i,n) and af(f,i,n), END assumed."</p>
+<p>This pair followed the same pattern and raised no new issues. With the source written, the converter turned it into calculator files in one step. Both worked on the calculator.</p>
+</li>
+<li>
+<h3>Knowing when to stop</h3>
+<p class="ask">"At this point I'm good. No need for full solvers."</p>
+<p>The equation document also outlines full solvers with cash-flow signs, BEGIN timing, and solving for <code>n</code> and the rate. The six factors covered what was needed, so those stay as a plan only.</p>
+</li>
+</ol>
+
+<h2 id="format">Inside a .89f file</h2>
+<p>A TI-89 variable file is a fixed 86-byte header followed by the variable's data and a checksum. Multi-byte header fields are stored low byte first, except the 2-byte variable size, which is stored high byte first.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Offset</th><th>Bytes</th><th>Contents</th></tr></thead>
+<tbody>
+<tr><td>0x00</td><td>8</td><td><code>**TI89**</code> signature</td></tr>
+<tr><td>0x08</td><td>2</td><td><code>01 00</code></td></tr>
+<tr><td>0x0A</td><td>8</td><td>Folder name, zero padded (<code>main</code>)</td></tr>
+<tr><td>0x12</td><td>40</td><td>Comment, zero padded</td></tr>
+<tr><td>0x3A</td><td>6</td><td><code>01 00 52 00 00 00</code></td></tr>
+<tr><td>0x40</td><td>8</td><td>Variable name, zero padded</td></tr>
+<tr><td>0x48</td><td>4</td><td>Type (<code>13</code> = function, <code>12</code> = program), then <code>03 00 00</code></td></tr>
+<tr><td>0x4C</td><td>4</td><td>Total file size, low byte first</td></tr>
+<tr><td>0x50</td><td>2</td><td><code>A5 5A</code></td></tr>
+<tr><td>0x52</td><td>4</td><td><code>00 00 00 00</code></td></tr>
+<tr><td>0x56</td><td>2</td><td>Variable size, <strong>high</strong> byte first</td></tr>
+<tr><td>0x58</td><td>n</td><td>Variable data (below)</td></tr>
+<tr><td>end</td><td>2</td><td>Checksum: low 16 bits of the sum of the size and data bytes</td></tr>
+</tbody>
+</table>
+</div>
+<p>For a function that hasn't been run yet, the variable data is the source text with lines separated by carriage returns (<code>0D</code>), and without the function name or the leading colons. A fixed trailer follows:</p>
+<pre><code>"(a,i,n)" 0D "Func" 0D ... 0D "EndFunc"   source text
+00                                        end of text
+xx xx                                     editor cursor position
+17 E4 E5 00 01 08 DC                      trailer for text-form functions</code></pre>
+<p>The comment symbol <code>©</code> is byte <code>A9</code>. The converter rejects any other non-ASCII character rather than guess its code.</p>
+
+<h2 id="source">Source code</h2>
+<p>This is the TI-BASIC source of each function, exactly as the converter reads it.</p>
+<details><summary>pf</summary><pre><code>:pf(f,i,n)
+:Func
+:© Present value of a future value: p = f/(1+i)^n
+:© f = future value, i = rate per period (decimal), n = periods
+:f/(1+i)^n
+:EndFunc</code></pre></details>
+<details><summary>fp</summary><pre><code>:fp(p,i,n)
+:Func
+:© Future value of a present value: f = p*(1+i)^n
+:© p = present value, i = rate per period (decimal), n = periods
+:p*(1+i)^n
+:EndFunc</code></pre></details>
+<details><summary>pa</summary><pre><code>:pa(a,i,n)
+:Func
+:© Present value of an annuity (END): p = a*(1-1/(1+i)^n)/i
+:© a = payment per period, i = rate per period (decimal), n = periods
+:If i=0
+:Return a*n
+:a*(1-1/(1+i)^n)/i
+:EndFunc</code></pre></details>
+<details><summary>ap</summary><pre><code>:ap(p,i,n)
+:Func
+:© Annuity of a present value (END): a = p*i/(1-1/(1+i)^n)
+:© p = present value, i = rate per period (decimal), n = periods
+:If i=0
+:Return p/n
+:p*i/(1-1/(1+i)^n)
+:EndFunc</code></pre></details>
+<details><summary>fa</summary><pre><code>:fa(a,i,n)
+:Func
+:© Future value of an annuity (END): f = a*((1+i)^n-1)/i
+:© a = payment per period, i = rate per period (decimal), n = periods
+:If i=0
+:Return a*n
+:a*((1+i)^n-1)/i
+:EndFunc</code></pre></details>
+<details><summary>af</summary><pre><code>:af(f,i,n)
+:Func
+:© Annuity of a future value (END): a = f*i/((1+i)^n-1)
+:© f = future value, i = rate per period (decimal), n = periods
+:If i=0
+:Return f/n
+:f*i/((1+i)^n-1)
+:EndFunc</code></pre></details>
+<p>Rebuild after editing a source file:</p>
+<pre><code>python3 tools/txt2ti89.py src/*.txt</code></pre>
+
+<footer>
+<p>Built with <a href="https://claude.com/claude-code">Claude Code</a>. The file header layout comes from the <a href="https://merthsoft.com/linkguide/ti89/fformat.html">TI-89 Link Protocol Guide</a>. The function-data layout was worked out from sample files in <a href="https://github.com/dapperfu/TI-89">dapperfu/TI-89</a>.</p>
+<p>© 2026 David Orser. Released under the MIT License, so you're free to use, change and share it.</p>
+</footer>
+</main>
+</body>
+</html>
