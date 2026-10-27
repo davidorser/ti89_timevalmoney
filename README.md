@@ -12,7 +12,7 @@ Time-Value-of-Money (TVM) functions I first learned and programmed in
 Engineering Economics class in the year 1999.
 
 ## The Story
-**[Read the project story → TI89_TVM_Project.html](TI89_TVM_Project.html)**: a
+**[Read the project story → TI89_TVM_Project.html](https://davidorser.github.io/ti89_timevalmoney/)**: a
 single self-contained page covering how the project was built, the formulas, the
 .89f file format, and download links for every function. Download it and open it
 in any browser; it works offline.
