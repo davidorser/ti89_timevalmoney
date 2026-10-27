@@ -3,6 +3,15 @@
 Six engineering-economics factor functions for the TI-89, built in one
 conversation with Claude Code and tested on a real calculator.
 
+## Backstory
+In Oct. 2026, my aged TI-85 calculator died.  Taking with it a multitude of
+programs I had written going back before I graduated undergrad in the year 
+2000. After receiving my new TI-89 "Titanium" replacement calculator, I set
+out with ClaudeAI to recreate the single most useful of those functions. The
+Time-Value-of-Money (TVM) functions I first learned and programmed in 
+Engineering Economics class in the year 1999.
+
+## The Story
 **[Read the project story → TI89_TVM_Project.html](TI89_TVM_Project.html)**: a
 single self-contained page covering how the project was built, the formulas, the
 .89f file format, and download links for every function. Download it and open it
