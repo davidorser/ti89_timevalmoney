@@ -17,6 +17,9 @@ single self-contained page covering how the project was built, the formulas, the
 .89f file format, and download links for every function. Download it and open it
 in any browser; it works offline.
 
+It took me about 45 mins to create, deploy, and test these functions.  Sadly I 
+spent over 2 hours turning it into a GitHub reposititory and web page.
+
 ## Functions
 
 All functions assume payments at the end of each period. `i` is the rate per
